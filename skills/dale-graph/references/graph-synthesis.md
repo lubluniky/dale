@@ -31,7 +31,7 @@ Generate the role name from the owned outcome:
 <system or artifact> + <action or lens>
 ```
 
-Examples are deliberately omitted. The task vocabulary must supply the role.
+Use the task vocabulary; a fixed roster is unnecessary.
 
 ### 3. Generate edges
 
@@ -82,116 +82,35 @@ Repeat until stable:
 
 ## Graph state
 
-Track:
+Track only what the current graph needs:
 
 ```yaml
-objective: verbatim user-visible outcome
+objective: user-visible outcome
 criteria:
   - id: criterion-id
     proof: direct evidence required
 nodes:
-  - id: short-stable-id
-    title: Dale Graph · <run> · <generated-role>
-    role: generated from owned work
-    deliverable: one observable artifact
+  - id: stable-id
+    deliverable: observable artifact
     depends_on: []
-    context_origin: fork | fresh-fallback
-    source_thread: calling coordinator or none
-    client_thread_id: queued worktree id or none
-    read_scope: exact scope
-    write_scope: none or exclusive paths
-    model: supported GPT-5.6 model selected for this node
-    thinking: supported effort selected for this node
-    routing_reason: why this is the cheapest sufficient route
-    subagent_policy: allowed, adaptive, node-local, one level deep
-    subagents: []
-    status: provisional | planned | ready | running | passed | revise | rejected | blocked
+    executor: coordinator | subagent | explicitly-requested-task
+    executor_id: exact returned ID when applicable
+    read_scope: sources
+    write_scope: exclusive paths or none
+    artifact_identity: revision or output identity
+    status: provisional | ready | running | passed | revise | rejected | blocked
     evidence: []
 edges:
   - from: node-id
     to: node-id
     reason: artifact | decision | conflict | revision
-    payload: exact artifact, choice, resource, or failed check
 ```
 
-## Worker contract
+Use the worker contract in [node-subagents.md](node-subagents.md). For proof,
+include the original requirement, raw artifact and identity, and a falsifiable
+question. Keep the reviewer read-only and do not supply the intended verdict.
 
-```text
-You are node <id> in a visible Dale Graph.
-
-Context origin: fork of the calling task or fresh fallback
-Generated role: <role>
-Owned deliverable: <deliverable>
-Inputs and satisfied dependencies: <artifacts>
-Read scope: <scope>
-Write scope: <scope or none>
-Applicable instructions: <AGENTS.md and user constraints>
-Forbidden actions: <list>
-Required evidence: <proof obligation>
-Stop when: <blocked or disproven condition>
-
-You may spawn node-local subagents when independent work inside this node makes
-that useful. Follow the supplied node-subagent policy. Do not create additional
-Codex tasks, and require every subagent to create neither agents nor Codex
-tasks. Stay inside your ownership boundary. You own orchestration, conflict
-resolution, validation, and the single integrated result. Distinguish verified
-evidence from inference. Do not claim completion without the required primary
-signal.
-
-Return:
-STATUS: PASS | REVISE | BLOCKED | REJECT
-ARTIFACT: <exact result or path>
-EVIDENCE: <paths, commands, outputs, citations>
-CHANGES: <files or none>
-VALIDATION: <exact checks and exits>
-SUBAGENTS: <name, scope, status, contribution, or none>
-DISCOVERED WORK: <new necessary work, or none>
-INVALIDATED ASSUMPTIONS: <items, or none>
-RISKS: <remaining risks>
-QUESTIONS FOR USER: <specific required input and why, or none>
-```
-
-## Proof contract
-
-```text
-You own proof obligation <criterion-id> in a visible Dale Graph.
-
-Criterion: <observable acceptance criterion>
-Candidate artifact: <raw artifact or diff>
-Required evidence: <direct signal>
-Relevant source or runtime: <scope>
-
-You may spawn node-local subagents for independent adversarial lenses inside
-this proof scope. Follow the supplied node-subagent policy. Do not create Codex
-tasks, and require every subagent to create neither agents nor Codex tasks. Do
-not inherit the producer's conclusion. You own the final verdict. Try to
-disprove the criterion and inspect coupled layers that could make a local result
-misleading.
-
-Return:
-VERDICT: PASS | REVISE | REJECT | BLOCKED
-EVIDENCE: <direct support or contradiction>
-SUBAGENTS: <name, lens, status, contribution, or none>
-UNCOVERED FAILURE MODE: <item or none>
-MINIMAL NEXT WORK: <new work unit, revision, or none>
-QUESTIONS FOR USER: <specific required input and why, or none>
-```
-
-## Runtime mutation rules
-
-- Add work when a result exposes a new necessary artifact or proof obligation.
-- Prune work when its output can no longer affect any acceptance criterion.
-- Split work when a newly discovered boundary allows independent ownership.
-- Merge work when new evidence makes separate nodes redundant.
-- Reroute dependents to the artifact that now owns the truth.
-- Insert conflict resolution when credible evidence disagrees.
-- Move proof closer to the risky artifact when late failure would waste work.
-- Re-evaluate immediately when any running node finishes or needs attention;
-  never wait for a whole concurrency batch solely for symmetry.
-- Challenge every graph expansion against the cheaper baseline of direct work.
-- Keep node-local decomposition inside its parent node; promote newly discovered
-  work to the visible graph only when it crosses the node's deliverable,
-  evidence, authority, or mutation boundary.
-- Re-route only future turns when a node's actual workload materially differs
-  from the workload used for its current model choice.
-- Never preserve the original graph for aesthetic consistency.
+Add work when a result reveals a necessary artifact or evidence gap; remove it
+when it cannot affect acceptance. Re-evaluate as any result arrives. Update
+workers after user corrections and reject stale outputs. Expand the graph only
+when separate ownership or evidence justifies the coordination cost.

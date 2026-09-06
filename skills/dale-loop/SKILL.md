@@ -1,62 +1,61 @@
 ---
 name: dale-loop
-description: Design and run a loop around any repeatable agent workflow. Use when the user invokes `$dale-loop`, asks Codex to keep watching or working, wants agents to prompt other agents, or needs a dynamic workflow whose shape should be inferred from the goal rather than selected up front.
+description: Design and run a repeatable agent workflow with observation, bounded action, verification, and resumable state. Use for $dale-loop or requests to keep watching or working toward a defined outcome.
 ---
 
 # Dale Loop
 
-Turn a goal into a closed loop that can keep moving without the user carrying context between steps.
+Use `observe -> decide -> act -> verify -> persist -> wait or stop`.
+Choose the smallest loop that fits the work; do not force a PR pipeline.
 
-Use this universal shape:
+## Define the contract
 
-```text
-observe -> decide -> dispatch -> verify -> persist -> wait or stop
-```
+Infer the outcome, observation source, trigger or cadence, allowed actions,
+direct verifier, durable state, user resource limits, and terminal condition.
+Ask only for missing information that changes the outcome or authority. Keep
+existing user authorization; a skill invocation does not authorize unrelated
+publication, merging, deployment, or messages.
 
-Do not force every problem into a PR pipeline. Design the smallest loop that matches the work.
+Choose a focused mode when useful:
 
-## 1. Define the contract
+- `$dale-loop-project`: several independently deliverable PRs.
+- `$dale-loop-pr`: one existing PR through review or repair.
+- `$dale-loop-repo`: recurring repository maintenance.
+- `$dale-loop-watch`: meaningful-change monitoring.
+- `$dale-loop-goal`: one sustained objective.
 
-Extract or determine:
+## Execute and resume
 
-- **Outcome:** the state that must become true
-- **Observation:** the live sources that reveal current state
-- **Trigger:** an event, cadence, completed task, changed commit, or failed check
-- **Actions:** what Codex may do next
-- **Verifier:** objective evidence that accepts or rejects progress
-- **State:** what must survive between wakeups
-- **Limits:** time, iterations, child tasks, cost signals, and repeated failures
-- **Human gates:** actions or judgment calls that still require the user
+During an active run, use subagents for independently useful work and inherited
+model settings. Give each a concrete output, exclusive write scope or read-only
+scope, verifier, and no further delegation. Keep overlapping mutations sequential.
+Do complementary work while workers run. Separate user-owned Codex tasks require
+an explicit request for separate tasks; they are not the default work unit.
 
-Ask only when a missing answer materially changes authority or the outcome. Never use “the agent says it is done” as the only verifier.
+For future wakeups, use the product's automation mechanism. Persist source and
+artifact identities, completed actions, failed signals, and the next condition
+in the automation prompt or an authorized durable artifact. Do not assume a
+subagent or its conversation survives a wakeup. Re-observe before resuming and
+avoid duplicate actions against unchanged state.
 
-## 2. Choose the loop shape
+Use a goal mechanism only for an explicitly requested goal, within its live
+schema; do not fabricate a token budget. Cadence belongs to automations, not a
+blocking shell sleep. Stay quiet on unchanged or non-actionable wakes unless the
+user requested periodic reports. Notify on meaningful change or required action.
 
-Route to a focused skill when one shape clearly fits:
+Verify against the actual source, checkout, PR head, or runtime. Agent completion
+text alone is insufficient. After repeated unchanged failure, change approach;
+stop at a real blocker, terminal condition, or user limit. Disable completed
+scheduled work through the supported automation tool; archive the user task
+only when requested.
 
-- `$dale-loop-project`: split a project across dependent or parallel PRs and carry them through merge
-- `$dale-loop-pr`: watch and repair one existing PR
-- `$dale-loop-repo`: wake on a cadence, inspect a repository, and direct useful work to fresh tasks
-- `$dale-loop-watch`: monitor a source or condition and notify or act only on meaningful change
-- `$dale-loop-goal`: keep one task moving linearly until an objective check passes
+Report meaningful actions, direct evidence, remaining blockers, and the next
+scheduled condition. Keep internal scheduling detail out of ordinary updates.
 
-For mixed or novel work, generate a bespoke graph. Create only the workers, reviewers, waits, and nested loops the current state requires. Do not predefine agent personas.
+## Cancellation and changed scope
 
-Show the chosen shape in a compact ledger before launching it. Continue without waiting unless the proposed shape introduces material ambiguity or new authority.
-
-## 3. Run the loop
-
-1. Read applicable instructions and inspect live state.
-2. Create user-visible Codex tasks for independent work. Use isolated worktrees for concurrent repository changes.
-3. Give every task the goal, current state, scope, verifier, limits, and required return fields.
-4. Reconcile task reports with live systems. Live GitHub, CI, deployments, trackers, and monitored sources beat stale reports.
-5. Persist the minimum state needed to resume: work units, task ids, dependencies, attempts, evidence, last observation, next wake, and blockers.
-6. On each wakeup, re-observe before acting. Do not replay stale actions.
-7. Create a fresh checker when independent judgment matters. Do not let a maker approve its own output.
-8. Stop or escalate when the verifier passes, a human gate is reached, limits are exhausted, or the same blocker repeats without new evidence.
-
-Use the product's task wakeup or automation mechanism for cadence-based loops. Do not hold a blocking shell sleep. Archive or end scheduled work when the terminal condition is reached.
-
-## 4. Return a receipt
-
-Report the loop shape, tasks and nested loops created, state transitions, verification evidence, resource/attempt counts, completed actions, preserved blockers, and next human decision. Never claim completion from child-task prose alone.
+On cancellation or revoked scope, interrupt affected workers immediately before
+other work, invalidate pending outputs, and preserve existing changes. Update
+or disable related scheduled work only within the user's cancellation scope.
+For a correction, stop conflicting work first, then send the revised contract;
+accept subsequent results only against the current request and artifact state.

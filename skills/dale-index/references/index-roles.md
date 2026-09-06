@@ -1,12 +1,13 @@
 # Dale Index role contracts
 
-Use these contracts after replacing every `<...>` field with task-specific
+Use these optional coverage roles when splitting work; combine or omit roles
+for narrow refreshes. Use these contracts after replacing every `<...>` field with task-specific
 context. Keep workers read-only. Require path-and-line evidence when practical.
 
 ## Shared discovery preamble
 
 ```text
-You are one visible Codex task in a Dale Index run.
+You are one read-only discovery worker in a Dale Index run.
 
 Repository: <absolute root>
 Role: <role>

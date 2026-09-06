@@ -1,7 +1,7 @@
 {
   "name": "dale",
-  "version": "0.4.0+codex.20260803193852",
-  "description": "One-on-one brainstorming, evidence-backed Codex coaching, rigorous reasoning lenses, repository indexing, adaptive task graphs, persistent agent loops, high-assurance review loops, scoped technical proof, and standalone HTML visualization for Codex.",
+  "version": "0.5.0",
+  "description": "Focused brainstorming, evidence-backed repository knowledge, adaptive subagent work, independent verification, resumable workflows, and HTML visualization for Codex.",
   "license": "MPL-2.0",
   "author": {
     "name": "Dale"
@@ -9,8 +9,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Dale",
-    "shortDescription": "Think, coach, index, orchestrate, loop, prove, and visualize.",
-    "longDescription": "Dale supports focused brainstorming, evidence-backed coaching from recent Codex task history, falsifiable reasoning lenses for hard problems, evidence-backed repository primitives, adaptive graphs of visible Codex tasks, persistent verified loops for repeatable agent work, resident-worker review loops for consequential work, scoped verification of technical claims, and self-contained HTML visualizations selected from task-relevant patterns.",
+    "shortDescription": "Think, delegate, verify, and resume.",
+    "longDescription": "Dale scales from direct work to coordinated subagents with explicit ownership and evidence. Separate user-owned tasks are optional on request. Model settings are inherited by default. Includes brainstorming, coaching, indexing, reasoning lenses, review loops, monitoring, technical proof, and standalone visualization.",
     "developerName": "Dale",
     "category": "Productivity",
     "capabilities": [

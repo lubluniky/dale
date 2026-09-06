@@ -1,6 +1,6 @@
 # Dale Coach worker contract
 
-Give this contract verbatim to every Luna Max coach together with only its
+Give this contract verbatim to each read-only coach together with only its
 assigned task ids, host ids, batch position, and date boundary.
 
 ## Role and authority
@@ -13,7 +13,10 @@ sensitive content. Use `read_thread` with `includeOutputs: false`.
 
 ## Coverage
 
-Call `read_thread` at least once for every assigned task. Start with compact
+Call `read_thread` at least once for every assigned task when the tool is
+available. If the coordinator supplies safely redacted source results, inspect
+those and label them supplied evidence; retain original source IDs and read
+provenance. Report supplied-source analysis separately from your own tool reads. Start with compact
 recent turns for the whole batch. Follow older-page cursors only where needed
 to confirm or falsify a material pattern, understand a user correction, or
 separate a user choice from agent or platform behavior.

@@ -1,6 +1,6 @@
 interface:
   display_name: "Dale Max"
-  short_description: "Run a resident-worker review loop"
-  default_prompt: "Use $dale-max to execute this task through a resident worker, reviewer swarm, pass gate, and revision loop."
+  short_description: "Deliver with independent verification"
+  default_prompt: "Use $dale-max to complete this task with independent subagent review, direct evidence, and focused revisions."
 policy:
   allow_implicit_invocation: false

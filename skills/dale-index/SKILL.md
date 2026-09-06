@@ -1,170 +1,83 @@
 ---
 name: dale-index
-description: Index or refresh a software repository through four visible Codex tasks and produce evidence-backed REQ.md, CONTEXT.md, STATE.md, TDD.md, DESIGN.md, and DECISIONS.md primitives. Use when the user invokes $dale-index, selects Dale Index through /skills, asks to index or map a repository, bootstrap project primitives, recover project context, or update stale primitive documents after substantial repository changes.
+description: Create or refresh evidence-backed REQ.md, CONTEXT.md, STATE.md, TDD.md, DESIGN.md, and DECISIONS.md repository primitives. Use for $dale-index, repository mapping, context recovery, or stale project documentation.
 ---
 
 # Dale Index
 
-Build a compact source of truth from the repository as it exists now. Use three
-parallel discovery tasks, one adversarial verification task, and the calling task
-as the sole integrator.
+Build a compact source of truth from the repository as it exists now. The
+calling agent integrates and writes; independent discovery uses read-only
+subagents where repository scope justifies parallel work.
 
-## Keep the orchestration thread-native
+## Bound the refresh
 
-- Treat explicit `$dale-index` selection, a direct request to run Dale Index, or
-  an explicit request for multiple Codex tasks as authorization to create the
-  visible tasks described here.
-- If this skill matched implicitly from an ordinary documentation request, tell
-  the user that Dale Index creates four visible tasks and get consent before
-  calling `create_thread`.
-- Use `list_projects`, `create_thread`, `set_thread_title`, `wait_threads`,
-  `read_thread`, and `send_message_to_thread`.
-- Never use subagents, `spawn_agent`, or hidden delegation as a substitute.
-- Make every created task user-owned and inspectable. Do not archive it unless
-  the user asks.
-- Explicit `$dale-index` selection or a direct request to run Dale Index also
-  delegates per-task GPT-5.6 model and reasoning selection to this skill. For an
-  implicit match, get consent for both visible task creation and automatic
-  routing; otherwise omit `model` and `thinking`.
-- Read `references/model-routing.md` before dispatch. Explicit GPT-5.6 model or
-  reasoning constraints in the current request override automatic routing. If
-  a requested route falls outside the GPT-5.6 boundary or the live tool schema,
-  state the conflict instead of silently substituting another model.
-- In every worker prompt, forbid that worker from creating subagents or more
-  tasks.
-- If the Codex task tools are unavailable or the repository cannot be resolved
-  to one saved project, stop and report the exact blocker. Do not silently run a
-  single-task imitation.
+Inspect applicable instructions, Git state, manifests, entrypoints, tests,
+schemas, and existing primitives. Preserve unrelated edits and hand-written
+content unless current evidence disproves it. No saved Codex project is needed.
 
-## Produce the primitive set
+For an initial index, cover the repository's material boundaries. For a refresh,
+use the last documented revision and actual changes to inspect affected claims
+and their consumers. Include uncommitted changes. When the baseline is missing
+or unreliable, broaden inspection rather than claiming incremental coverage.
 
-Use these files as distinct, non-overlapping sources of truth:
+## Own each fact once
 
 | File | Owns |
 |---|---|
-| `REQ.md` | Product intent, users, scope, requirements, acceptance criteria |
-| `CONTEXT.md` | Architecture, repository map, contracts, constraints, operations |
-| `STATE.md` | Current objective, active work, blockers, risks, next actions |
-| `TDD.md` | Test strategy, commands, quality gates, missing coverage |
-| `DESIGN.md` | Existing visual language, tokens, primitives, states, accessibility |
-| `DECISIONS.md` | Dated decisions, alternatives, evidence, consequences, status |
+| REQ.md | Product intent, users, scope, requirements, acceptance criteria |
+| CONTEXT.md | Architecture, repository map, contracts, constraints, operations |
+| STATE.md | Current work, blockers, risks, next actions |
+| TDD.md | Test strategy, actual commands, quality gates, missing coverage |
+| DESIGN.md | Existing visual language, components, states, accessibility |
+| DECISIONS.md | Dated decisions, alternatives, evidence, consequences, status |
 
-Keep `STATE.md` volatile and `DECISIONS.md` durable. Do not duplicate a fact
-across documents; link to its owning file. If the project has no UI, say so with
-evidence in `DESIGN.md` instead of inventing a design system.
+Use the established primitive directory even when its set is incomplete. Add
+missing documents there and preserve relative links. Use the repository root
+only when no established location exists; resolve competing locations from
+repository conventions before writing. Use `assets/primitives/`
+for new files, removing scaffold placeholders. Link to the fact's owning file.
+Mark non-UI projects explicitly in DESIGN.md. Keep STATE volatile and DECISIONS
+durable; do not invent dates, owners, product intent, or historical decisions.
 
-Place missing primitives in the repository root, matching the reference layout.
-If an existing complete primitive set lives together elsewhere, update it in
-place. Never create a second competing set.
+## Discover and integrate
 
-Use the schemas under `assets/primitives/` when creating files. Treat them as
-structure, not prose to copy blindly. Remove every placeholder from files
-written to the target repository.
+Work directly for small repositories or a narrow refresh. Delegate independent
+areas when that saves time or improves coverage; there is no required worker
+count. Read [index-roles.md](references/index-roles.md) when splitting discovery.
+Its roles are coverage suggestions, not mandatory agents.
 
-## Run the indexing workflow
+Use `spawn_agent` with the minimum context, read-only scope, one evidence
+output, and no further delegation. Inherit model and effort. Continue a distinct
+inspection or integration preparation while workers run. Read
+[model-routing.md](references/model-routing.md) only for requested routing changes.
+Separate tasks are optional only when explicitly requested by the user.
 
-### 1. Establish the evidence boundary
+Label material claims verified, inferred, unknown, or stale. Source, tests, and
+runtime observations outrank unsupported documentation; distinguish implemented
+behavior from exercised behavior. Include compact path/symbol/command evidence.
 
-1. Resolve the repository root.
-2. Read every applicable `AGENTS.md`, including deeper files for scoped paths.
-3. Inspect `git status`, tracked files, manifests, lockfiles, runtime entrypoints,
-   tests, schemas, routes, configuration examples, and existing documentation.
-4. Record the current branch or revision when Git exists. Never mutate Git state.
-5. Label repository evidence as `verified`, `inferred`, `unknown`, or `stale`.
-6. Treat code, tests, schemas, and runtime output as stronger evidence than docs.
+For consequential contradictions or a broad initial synthesis, use a fresh
+read-only verifier on raw claims and source evidence. For a small refresh, the
+coordinator can check the affected claims directly. If independent verification
+is unavailable, disclose the limitation and finish supported documentation;
+do not invent a verifier or block accessible indexing merely for tool absence.
 
-Do not print secrets or raw environment values. Use names of required variables,
-not their values.
+Only the coordinator writes primitives. Resolve conflicting claims by evidence
+quality and freshness, preserve unknowns, and inspect the final diff.
 
-### 2. Resolve the Codex project
+## Validate and report
 
-Call `list_projects` first. Select the one exact saved project whose root matches
-the repository. Use `target.environment.type: "local"` because discovery tasks
-are read-only and the calling task owns all writes. If selection is ambiguous,
-ask for the missing project choice before creating tasks.
+Check that the six documents coexist, referenced paths and commands exist or
+are labeled unverified, no scaffold remains, and cross-document claims agree.
+Map known acceptance criteria to available checks. Record revision and coverage
+so the next refresh can be scoped. Do not run broad builds solely for indexing.
 
-### 3. Launch three discovery tasks
+Report created or refreshed documents, material unknowns, and checks performed.
 
-Read `references/index-roles.md` and `references/model-routing.md` before
-creating tasks. Immediately before dispatch, inspect the current `create_thread`
-tool schema and intersect its supported combinations with the GPT-5.6 catalog.
-Route each role from its actual repository scope and evidence risk; do not copy
-the coordinator's model settings. Show each role's model, thinking, and one-line
-routing reason, then create these roles concurrently:
+## Cancellation and changed scope
 
-1. `Dale Index · Context Cartographer`
-2. `Dale Index · Product & State Historian`
-3. `Dale Index · Quality & Design Auditor`
-
-Give each task the shared evidence contract and its role contract. Require
-read-only inspection and a structured final report; do not let discovery tasks
-edit primitives.
-
-Rename each task immediately with `set_thread_title`. Retain its `threadId`,
-`hostId`, model, thinking, routing reason, and wait cursor.
-
-### 4. Collect without busy polling
-
-Wait on all active tasks with one bounded `wait_threads` call. Reuse
-`afterCursor` values so completed text is not replayed. A progress timeout is
-normal; report meaningful changes only. Use `read_thread` only when the compact
-result lacks evidence needed for integration.
-
-If a report violates its contract, send one precise correction with
-`send_message_to_thread` and wait again. Preserve the task's current route
-unless the required correction materially changes its workload; a follow-up may
-use a newly justified supported GPT-5.6 route, but an already running turn
-cannot be changed in place.
-
-### 5. Launch the verification gate
-
-Create `Dale Index · Evidence Verifier` only after the three discovery reports
-are available. Select its route from the actual contradictions, missing
-coverage, repository complexity, and consequence of a false pass—not from the
-coordinator's settings or the generic fact that it is a verifier. Give it:
-
-- the raw reports, not the coordinator's preferred synthesis;
-- the repository root and applicable instructions;
-- the primitive file contract;
-- the adversarial verifier prompt from `references/index-roles.md`.
-
-Require it to reject unsupported claims, detect contradictions and stale
-documentation, identify missing coverage, and return a pass/fail list. Do not
-ask it to make repository edits.
-
-### 6. Integrate only survivors
-
-Let the calling task write or update all six primitives. Preserve existing
-hand-written content unless current evidence disproves it. Mark unresolved
-conflicts and unknowns explicitly; never fill a gap with a plausible guess.
-
-For each material claim, include a compact source pointer such as a file path,
-symbol, test name, or exact non-secret command. Prefer useful summaries over
-inventories of every file.
-
-### 7. Validate the result
-
-Check at minimum:
-
-1. All six primitives exist together.
-2. No template markers, TODO placeholders, fake dates, or invented owners remain.
-3. Commands and paths referenced by the primitives exist or are labeled
-   unverified.
-4. `REQ.md` acceptance criteria map to `TDD.md` checks where evidence exists.
-5. `CONTEXT.md` and `DECISIONS.md` do not disagree.
-6. `STATE.md` describes current state, not a speculative roadmap.
-7. `DESIGN.md` reflects the product's actual UI surface or explicitly records
-   non-applicability.
-8. A final diff or file inventory contains only Dale's intended documentation
-   changes.
-
-Do not run broad builds or test suites solely for documentation indexing.
-Run a narrow non-mutating command only when it is the cheapest way to verify a
-material claim.
-
-## Report completion
-
-State which primitives were created or refreshed, which claims remain unknown,
-what the verifier rejected, and the exact checks run. Include one
-`::created-thread` directive per created task in the final response, using
-`threadId` or `clientThreadId` exactly as returned by `create_thread`.
+On cancellation or revoked scope, interrupt affected workers immediately before
+other work, invalidate pending outputs, and preserve existing changes. Update
+or disable related scheduled work only within the user's cancellation scope.
+For a correction, stop conflicting work first, then send the revised contract;
+accept subsequent results only against the current request and artifact state.

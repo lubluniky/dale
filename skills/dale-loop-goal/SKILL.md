@@ -1,21 +1,31 @@
 ---
 name: dale-loop-goal
-description: Keep one agent task progressing linearly until an objective completion condition passes, with fresh state checks and hard resource limits. Use when the user has one long-running goal that does not need parallel PR orchestration or a changing workflow graph.
+description: Keep one requested goal progressing until an observable completion condition is satisfied. Use for a sustained objective that does not require multiple PRs or a changing project graph.
 ---
 
 # Dale Loop Goal
 
-Keep one thread moving toward one outcome. Do not turn it into a swarm unless the work genuinely branches.
+Keep one objective coherent across work and resumptions. State the completion
+predicate and current evidence, then take the smallest useful next action.
+Use subagents only when independent work emerges; inherit model settings and
+keep a single coordinator. Do not turn sequential work into a swarm.
 
-## Workflow
+Use the goal tool only when a goal was explicitly requested. Follow its live
+status and blocking rules; set a token budget only if the user supplied one.
+For a requested later wakeup, use an automation instead of a blocking sleep.
+Persist enough state to re-observe the actual target before the next action.
 
-1. State the outcome as a verifiable predicate and record the current evidence.
-2. Set iteration, elapsed-time, and repeated-failure limits plus any required human gates.
-3. Work on the smallest next action that can change the predicate.
-4. At the end of every turn, use fresh evidence to evaluate completion. Do not accept self-reported completion without a check.
-5. If incomplete and progress was made, persist the new state and continue through the product's goal or wakeup mechanism.
-6. If incomplete and the same failure repeats without new evidence, change approach once, then escalate at the configured limit.
-7. Stop immediately for permissions, destructive requirements, ambiguous intent, or a human approval gate.
-8. Finish with the predicate, evidence, iterations, elapsed time, work completed, and remaining blocker.
+Continue through authorized work. Ask for missing authority or a consequential
+choice only when needed and finish unaffected work meanwhile. When the same
+failure repeats without new evidence, change approach rather than retry harder.
+Honor user limits and the goal tool's exact completion/blocking semantics.
 
-Prefer this shape for one deep task. Use `$dale-loop-project` when the goal becomes several independently reviewable work streams.
+Finish with the outcome, direct evidence, and any actual unmet condition.
+
+## Cancellation and changed scope
+
+On cancellation or revoked scope, interrupt affected workers immediately before
+other work, invalidate pending outputs, and preserve existing changes. Update
+or disable related scheduled work only within the user's cancellation scope.
+For a correction, stop conflicting work first, then send the revised contract;
+accept subsequent results only against the current request and artifact state.

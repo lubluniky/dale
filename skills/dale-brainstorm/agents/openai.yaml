@@ -1,4 +1,4 @@
 interface:
   display_name: "Dale Brainstorm"
-  short_description: "Brainstorm one-on-one without premature execution"
-  default_prompt: "Use $dale-brainstorm to explore this idea with me one-on-one."
+  short_description: "Think through ideas together"
+  default_prompt: "Use $dale-brainstorm to explore this idea with me and make the tradeoffs concrete."

@@ -1,4 +1,4 @@
 interface:
   display_name: "Dale Loop Repo"
   short_description: "Run a recurring repository maintainer"
-  default_prompt: "Use $dale-loop-repo to maintain this repository and direct useful work to fresh Codex tasks."
+  default_prompt: "Use $dale-loop-repo to maintain this repository and delegate independent work to bounded subagents."

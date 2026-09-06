@@ -1,22 +1,42 @@
 ---
 name: dale-loop-project
-description: Orchestrate a multi-stage engineering project through dynamically grouped or stacked Codex tasks, branches, pull requests, independent reviews, remediation cycles, and merge. Use when one goal needs multiple PRs or when the user wants a project carried autonomously from plan to merged changes.
+description: Carry an engineering project through independently reviewable changes and PRs. Use when a requested project needs multiple PRs or explicit end-to-end delivery through merge.
 ---
 
 # Dale Loop Project
 
-Turn one engineering goal into a dependency-aware PR graph and carry it to merge.
+Split by independently deliverable outcome. Group coupled small changes and
+record real dependencies, ownership, branch/PR identity, and acceptance checks.
 
-## Workflow
+Use subagents for independent work within the current task, inheriting model
+settings. Assign one writer per scope and explicitly isolate concurrent changes
+in worktrees where needed; agents share a checkout by default. The coordinator
+owns integration. Create separate Codex tasks only when the user requests them.
 
-1. Read repository instructions, confirm GitHub access, resolve the default branch, preserve unrelated changes, and discover canonical checks.
-2. Split work by independently reviewable outcome. Group coupled small changes; separate risky or independently shippable work. Mark parallel, sequential, and stacked dependencies.
-3. Show a ledger with scope, dependency, branch, verifier, state, and attempt count.
-4. Create one user-visible Codex task per ready unit in an isolated worktree. Require a `codex/` branch, behavioral verification where possible, repository checks, commit, push, and ready PR.
-5. Reconcile every report with live GitHub state. When a PR head first appears or changes, create a fresh independent review task with the acceptance criteria, diff, and verification evidence.
-6. Create a fresh remediation task for active valid findings. Re-review the new head. Stop after three unsuccessful cycles or an earlier ambiguous/destructive blocker.
-7. Treat a PR as clean only when required checks pass, independent review has no actionable findings, GitHub has no unresolved thread or active change request, the diff is in scope, and the PR is mergeable.
-8. Squash-merge clean PRs in dependency order and delete remote branches. Update or retarget dependent work against the merged base, then rerun checks and review.
-9. Finish with task ids, branches, PRs, checks, review cycles, merge commits, and blockers.
+Before publication, identify whether the user authorized commit, push, PR
+creation, merge, and branch deletion. Carry out already authorized delivery
+without asking again. Prepare reviewable work before asking for any missing
+publication authority; do not infer merge or branch deletion from a generic
+request to build a feature.
 
-Never let an implementation task approve its own work. Never merge silence as approval.
+Validate each candidate against requirements and the current diff. Use an
+independent reviewer for material risks, supplying raw artifacts and criteria.
+Track findings by PR head; changed code invalidates affected review evidence.
+Reconcile checks, unresolved reviews, scope, and mergeability with live GitHub.
+Repair valid findings within scope; change approach after repeated failures.
+
+When merge is authorized and required checks and review pass, merge in dependency
+order using the requested or repository-supported method. Refresh dependent
+branches and validate affected integration. Delete branches only if authorized.
+Use automations for requested future follow-up, with durable state and quiet
+unchanged wakes. Do not assume subagents persist across wakeups.
+
+Report delivered changes, PRs, decisive checks, and any remaining delivery gate.
+
+## Cancellation and changed scope
+
+On cancellation or revoked scope, interrupt affected workers immediately before
+other work, invalidate pending outputs, and preserve existing changes. Update
+or disable related scheduled work only within the user's cancellation scope.
+For a correction, stop conflicting work first, then send the revised contract;
+accept subsequent results only against the current request and artifact state.

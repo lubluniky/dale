@@ -1,21 +1,35 @@
 ---
 name: dale-loop-repo
-description: Maintain a repository on a recurring heartbeat by inspecting issues, pull requests, CI, dependencies, and repository-local priorities, then directing bounded work to fresh Codex tasks. Use when the user asks Codex to maintain a repo, run recurring engineering triage, or wake periodically and dispatch useful work.
+description: Maintain a repository on a requested recurring cadence using bounded priorities and live evidence. Use for recurring engineering triage or repository maintenance.
 ---
 
 # Dale Loop Repo
 
-Run a conservative maintainer heartbeat. Find useful machine-checkable work, delegate it, and leave the repository cleaner than the previous wakeup.
+Use a product automation for the requested cadence. Record priority sources,
+allowed actions, merge authority, direct checks, and terminal condition.
+On each wake inspect current repository state, open work, and CI before choosing
+an action. Prefer already-started or blocking work to inventing new work.
 
-## Workflow
+Select bounded work with observable acceptance criteria. Delegate independent
+parts to subagents during the run, inheriting model settings. Give each an
+exclusive scope or read-only role and forbid further delegation. Use explicit
+worktree isolation for concurrent writers when necessary. Separate Codex tasks
+require an explicit user request; unavailable task tools do not block local work.
 
-1. Read repository instructions and identify its active branch, local notes, roadmap, open issues and PRs, recent CI, and existing maintainer state.
-2. Define the cadence, priority sources, verification gates, concurrency limit, merge authority, and terminal condition. Default to one active implementation lane and one review lane.
-3. On each wakeup, refresh live state before choosing work. Prefer already-started or blocking work over generating new work.
-4. Select only bounded, in-scope tasks with objective verification. Avoid vague product work, architecture rewrites, auth, payments, deployments, and destructive changes unless explicitly authorized.
-5. Create fresh user-visible Codex tasks in isolated worktrees. Keep implementation and independent review separate.
-6. Track task ids, branches, PRs, attempts, last observation, and next action. Do not dispatch duplicate work for unchanged state.
-7. Carry owned PRs through checks and review, using `$dale-loop-pr` behavior. Respect the configured merge gate.
-8. End or archive the heartbeat when the terminal condition holds. Escalate repeated blockers with evidence.
+Persist source/PR identities, actions, findings, and next condition so a future
+wake can resume without a living worker. Prevent duplicate dispatch against
+unchanged state. Verify reports against live systems and respect publication
+and merge authority. Do not expand routine maintenance into unrelated product,
+security, deployment, or destructive changes.
 
-Return a short report after meaningful action. Archive no-op wakes when the product supports it.
+Notify only after meaningful action, failure, completion, or required input.
+Remain quiet when unchanged. Disable scheduled work at its terminal condition;
+archive the user task only when asked. Back off and report repeated blockers.
+
+## Cancellation and changed scope
+
+On cancellation or revoked scope, interrupt affected workers immediately before
+other work, invalidate pending outputs, and preserve existing changes. Update
+or disable related scheduled work only within the user's cancellation scope.
+For a correction, stop conflicting work first, then send the revised contract;
+accept subsequent results only against the current request and artifact state.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Dale Index"
-  short_description: "Index a repository with routed Codex tasks"
-  default_prompt: "Use $dale-index to index this repository with efficiently routed GPT-5.6 Codex tasks."
+  short_description: "Map and refresh repository knowledge"
+  default_prompt: "Use $dale-index to create or refresh this repository’s evidence-backed primitives, scaling discovery to the changed scope."

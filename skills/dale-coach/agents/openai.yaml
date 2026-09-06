@@ -1,6 +1,6 @@
 interface:
   display_name: "Dale Coach"
-  short_description: "Learn from recent Codex tasks and improve usage"
-  default_prompt: "Use $dale-coach to review my recent Codex tasks and give evidence-backed advice on how I use Codex."
+  short_description: "Learn from recent task evidence"
+  default_prompt: "Use $dale-coach to review my recent Codex work and suggest up to three evidence-backed improvements."
 policy:
   allow_implicit_invocation: false

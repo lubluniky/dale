@@ -16,6 +16,6 @@ Build a change detector, not a scheduled summary generator.
 5. If no meaningful change occurred, update only necessary health metadata and remain quiet.
 6. If the predicate matches, capture evidence, perform the authorized action or notify once, update the baseline, and decide whether to continue.
 7. Back off and escalate after repeated source/auth failures. Never interpret inability to read the source as “no change.”
-8. Stop and archive the automation when the expiry or terminal condition is reached.
+8. Disable scheduled work when the expiry or terminal condition is reached; archive the user task only when requested.
 
 Use the product's automation mechanism. Do not implement cadence with a blocking shell loop.
